@@ -34,17 +34,16 @@ Eigen::Vector3d blinn_phong_shading(
     light->direction(light_ray.origin, light_ray.direction, max_t);
 
     if (!first_hit(light_ray, 1e-6, objects, hit_id_light, t_light, n_light) || t_light > max_t) {
-      ambient += (ka.array() * light->I.array()).matrix();
       diffuse += (kd.array() * light->I.array() * std::max(0.0, n.dot(light_ray.direction))).matrix();
       h = (-ray.direction.normalized() + light_ray.direction).normalized();
-      specular += (ks.array() * light->I.array() * std::max(0.0, n.dot(h))).matrix();
+      specular += (ks.array() * light->I.array() * pow(std::max(0.0, n.dot(h)), p)).matrix();
     }
     else
     {
     }
   }
-
-  color = ambient + diffuse + specular;
+  ambient += (ka.array() * Eigen::Vector3d(0.1,0.1,0.1).array()).matrix();
+  color = ambient + specular + diffuse;
   return color;
   ////////////////////////////////////////////////////////////////////////////
 }
