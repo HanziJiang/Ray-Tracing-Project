@@ -33,7 +33,7 @@ Eigen::Vector3d blinn_phong_shading(
   for (std::shared_ptr<Light> light: lights) {
     light->direction(light_ray.origin, light_ray.direction, max_t);
 
-    if (!first_hit(ray, 1e-6, objects, hit_id_light, t_light, n_light) || t_light > max_t) {
+    if (!first_hit(light_ray, 1e-6, objects, hit_id_light, t_light, n_light) || t_light > max_t) {
       ambient += (ka.array() * light->I.array()).matrix();
       diffuse += (kd.array() * light->I.array() * std::max(0.0, n.dot(light_ray.direction))).matrix();
       h = (-ray.direction.normalized() + light_ray.direction).normalized();
