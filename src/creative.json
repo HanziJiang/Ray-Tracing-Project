@@ -1,17 +1,161 @@
 {
   "camera": {
     "type": "perspective",
-    "focal_length": 3,
-    "eye": [0,0,5],
-    "up": [0,1,0],
-    "look": [0,0,-1],
+    "focal_length": 1,
+    "eye": [0, 0, 2],
+    "up": [0, 1, 0],
+    "look": [0, 0, -1],
     "height": 1,
     "width": 1.7777777778
   },
   "materials": [
+    {
+      "name": "gray mirror",
+      "ka": [0.1,0.1,0.1],
+      "kd": [0.1,0.1,0.1],
+      "ks": [0.1,0.1,0.1],
+      "km": [0.999,0.999,0.999],
+      "phong_exponent": 1000
+    },
+    {
+      "name": "dark gray",
+      "ka": [0.1,0.1,0.1],
+      "kd": [0.14,0.14,0.14],
+      "ks": [0.2,0.2,0.2],
+      "km": [0.05,0.05,0.05],
+      "phong_exponent": 200
+    },
+    {
+      "name": "gold",
+      "ka": [1.0, 0.7, 0.2],
+      "kd": [1.0, 0.7, 0.2],
+      "ks": [0.8, 0.8, 0.8],
+      "km": [0.05, 0.05, 0.05],
+      "phong_exponent": 1000
+    }
   ],
-  "lights":[
+  "lights": [
+    {
+      "type": "point",
+      "color": [0.3, 0.3, 0.3],
+      "position": [-0.9, 0.9, 2]
+    },
+    {
+      "type": "point",
+      "color": [0.3, 0.3, 0.3],
+      "position": [0.9, 0.9, 2]
+    },
+    {
+      "type": "point",
+      "color": [0.3, 0.3, 0.3],
+      "position": [0, 0.9, 2]
+    },
+    {
+      "type": "point",
+      "color": [0.3, 0.3, 0.3],
+      "position": [0, -0.7, 2]
+    },
+    {
+      "type": "point",
+      "color": [0.3, 0.3, 0.3],
+      "position": [0, 0, -2]
+    }
   ],
   "objects": [
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [0.5,0.57735,0.433],
+      "radius": 0.02
+    },
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [-1.1,-0.27735,0.333],
+      "radius": 0.09
+    },
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [-1.7,0.37735,-0.933],
+      "radius": 0.11
+    },
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [-1.2,1.37735,-1.833],
+      "radius": 0.07
+    },
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [-0.2,0.43,0.5],
+      "radius": 0.045
+    },
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [1.6,0.43,-0.9],
+      "radius": 0.075
+    },
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [1.6,-0.43,0.0],
+      "radius": 0.10
+    },
+    {
+      "type": "sphere",
+      "material": "gray mirror",
+      "center": [1.04,-0.33,-0.1],
+      "radius": 0.079
+    },
+    {
+      "type": "plane",
+      "material": "dark gray",
+      "point": [-2.5, 0, 0],
+      "normal": [1, 0, 0]
+    },
+    {
+      "type": "plane",
+      "material": "dark gray",
+      "point": [0, 0, -2.5],
+      "normal": [0, 0, 1]
+    },
+    {
+      "type": "plane",
+      "material": "dark gray",
+      "point": [0, 1.5, 0],
+      "normal": [0, -1, 0]
+    },
+    {
+      "type": "plane",
+      "material": "dark gray",
+      "point": [2.5, 0, 0],
+      "normal": [-1, 0, 0]
+    },
+    {
+      "material": "gray mirror",
+      "type": "plane",
+      "point": [0, -0.8, 0],
+      "normal": [0, 1, 0]
+    },
+    {
+      "material": "gray mirror",
+      "type": "plane",
+      "point": [2, 1.2, 0],
+      "normal": [-1, -1, 0]
+    },
+    {
+      "material": "gray mirror",
+      "type": "plane",
+      "point": [-2, 1.2, 0],
+      "normal": [1, -1, 0]
+    },
+    {
+      "type": "soup",
+      "material": "gold",
+      "stl": "bunny.stl"
+    }
   ]
 }
