@@ -1,20 +1,21 @@
 #include "blinn_phong_shading.h"
-#include "first_hit.h"
+
 #include <iostream>
 
+#include "first_hit.h"
+
 Eigen::Vector3d blinn_phong_shading(
-  const Ray & ray,
-  const int & hit_id, 
-  const double & t,
-  const Eigen::Vector3d & n,
-  const std::vector< std::shared_ptr<Object> > & objects,
-  const std::vector<std::shared_ptr<Light> > & lights)
-{
+    const Ray& ray,
+    const int& hit_id,
+    const double& t,
+    const Eigen::Vector3d& n,
+    const std::vector<std::shared_ptr<Object> >& objects,
+    const std::vector<std::shared_ptr<Light> >& lights) {
   ////////////////////////////////////////////////////////////////////////////
-  Eigen::Vector3d color = Eigen::Vector3d(0,0,0);
-  Eigen::Vector3d ambient = Eigen::Vector3d(0,0,0);
-  Eigen::Vector3d diffuse = Eigen::Vector3d(0,0,0);
-  Eigen::Vector3d specular = Eigen::Vector3d(0,0,0);
+  Eigen::Vector3d color = Eigen::Vector3d(0, 0, 0);
+  Eigen::Vector3d ambient = Eigen::Vector3d(0, 0, 0);
+  Eigen::Vector3d diffuse = Eigen::Vector3d(0, 0, 0);
+  Eigen::Vector3d specular = Eigen::Vector3d(0, 0, 0);
 
   const Eigen::Vector3d ka = objects[hit_id]->material->ka;
   const Eigen::Vector3d kd = objects[hit_id]->material->kd;
@@ -29,7 +30,7 @@ Eigen::Vector3d blinn_phong_shading(
   double t_light;
   Eigen::Vector3d n_light;
 
-  for (std::shared_ptr<Light> light: lights) {
+  for (std::shared_ptr<Light> light : lights) {
     light->direction(light_ray.origin, light_ray.direction, max_t);
 
     // if the object is not in shadow
@@ -39,8 +40,8 @@ Eigen::Vector3d blinn_phong_shading(
       specular += (ks.array() * light->I.array() * pow(std::max(0.0, n.dot(h)), p)).matrix();
     }
   }
-  
-  ambient += (ka.array() * Eigen::Vector3d(0.1,0.1,0.1).array()).matrix();
+
+  ambient += (ka.array() * Eigen::Vector3d(0.1, 0.1, 0.1).array()).matrix();
   color = ambient + specular + diffuse;
   return color;
   ////////////////////////////////////////////////////////////////////////////
