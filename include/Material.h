@@ -7,7 +7,7 @@ struct Material
 {
   // Ambient, Diffuse, Specular, Mirror Color
   Eigen::Vector3d ka,kd,ks,km;
-  // Phong exponent
-  double phong_exponent;
+  // Phong exponent, transparency
+  double phong_exponent, kt;
 };
 #endif
