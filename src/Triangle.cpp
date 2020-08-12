@@ -7,7 +7,7 @@ bool Triangle::intersect(
   const Ray & ray, const double min_t, double & t, Eigen::Vector3d & n) const
 {
   ////////////////////////////////////////////////////////////////////////////
-  // formulas from testbook
+  // formulas from textbook
   
   Eigen::Vector3d point1 = std::get<0>(corners);
   Eigen::Vector3d point2 = std::get<1>(corners);
