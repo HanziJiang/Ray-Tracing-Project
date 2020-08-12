@@ -1,13 +1,23 @@
 {
   "camera": {
     "type": "perspective",
-    "focal_length": 3,
-    "eye": [0,0,5],
+    "focal_length": 1,
+    "eye": [0,0,2],
     "up": [0,1,0],
     "look": [0,0,-1],
     "height": 1,
+    "focal_plane": 1.6,
     "width": 1.7777777778
   },
+
+  "lights":[
+    {
+      "type": "point",
+      "color": [1.0,1.0,1.0],
+      "position": [0,0,4]
+    }
+  ],
+
   "materials": [
     {
       "name": "orange plastic",
@@ -15,42 +25,48 @@
       "kd": [1.0, 0.7, 0.2],
       "ks": [0.8,0.8,0.8],
       "km": [0.05,0.05,0.05],
-      "phong_exponent": 1000
+      "phong_exponent": 1000,
+      "kt": 0.0
     },
     {
-      "name": "Lambertian blue",
-      "ka": [0.2, 0.3, 0.8],
-      "kd": [0.2, 0.3, 0.8],
-      "ks": [0.1,0.1,0.1],
-      "km": [0.3,0.3,0.3],
-      "phong_exponent": 20
-    }
-  ],
-  "lights":[
-    {
-      "type": "directional",
-      "direction": [0,0,-1],
-      "color": [0.8,0.8,0.8]
+      "name": "glass",
+      "ka": [0.1,0.1,0.1],
+      "kd": [0.1,0.1,0.1],
+      "ks": [0.2,0.2,0.2],
+      "km": [0.1,0.1,0.1],
+      "phong_exponent": 500,
+      "kt": 1.0
     },
     {
-      "type": "point",
-      "position": [-10,20,10],
-      "color": [0.8,0.8,0.8]
+      "name": "blue metal",
+      "ka": [0.215686,0.494118,0.721569],
+      "kd": [0.215686,0.494118,0.721569],
+      "ks": [0.2,0.2,0.2],
+      "km": [0.1,0.1,0.1],
+      "kt": 0.0,
+      "phong_exponent": 500
     }
   ],
 
   "objects": [
     {
       "type": "sphere",
-      "material": "orange plastic",
+      "material": "glass",
       "center": [0,0,0],
-      "radius": 0.5
+      "radius": 0.45
+    },
+    {
+      "type": "sphere",
+      "material": "blue metal",
+      "center": [0.6,0.6,-2],
+      "radius": 1.01
     },
     {
       "type": "plane",
-      "material": "Lambertian blue",
-      "point": [0,-0.5,0],
-      "normal": [0,1,0]
+      "material": "orange plastic",
+      "point": [0,0,-30],
+      "normal": [0,0,1]
     }
   ]
 }
+
