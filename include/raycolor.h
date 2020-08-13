@@ -26,4 +26,9 @@ bool raycolor(
   const int num_recursive_calls,
   Eigen::Vector3d & rgb);
 
+// bool raycolor(const Ray &ray, const double min_t,
+//               const std::shared_ptr<AABBTree>& tree,
+//               const std::vector<std::shared_ptr<Light>> &lights,
+//               const int num_recursive_calls, Eigen::Vector3d &rgb);
+
 #endif

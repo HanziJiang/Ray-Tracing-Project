@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include <memory>
+//#include "AABBTree.h"
 
 
 // Given a ray and its hit in the scene, return the Blinn-Phong shading
@@ -27,5 +28,13 @@ Eigen::Vector3d blinn_phong_shading(
   const Eigen::Vector3d & n,
   const std::vector< std::shared_ptr<Object> > & objects,
   const std::vector<std::shared_ptr<Light> > & lights);
+
+// Eigen::Vector3d blinn_phong_shading(
+//     const Ray& ray,
+//     const std::shared_ptr<AABBTree>& tree,
+//     const double& t,
+//     const Eigen::Vector3d& n,
+//     const std::vector<std::shared_ptr<Light> >& lights,
+//     const std::shared_ptr<Object>& descendant);
 
 #endif

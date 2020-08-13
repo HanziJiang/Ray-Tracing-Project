@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include <memory>
+//#include "AABBTree.h"
 
 // Find the first (visible) hit given a ray and a collection of scene objects
 //
@@ -27,5 +28,13 @@ bool first_hit(
   int & hit_id, 
   double & t,
   Eigen::Vector3d & n);
+
+// bool first_hit(
+//     const Ray& ray,
+//     const double min_t,
+//     const std::shared_ptr<AABBTree>& tree,
+//     double& t,
+//     Eigen::Vector3d& n,
+//     std::shared_ptr<Object> & descendant);
 
 #endif
