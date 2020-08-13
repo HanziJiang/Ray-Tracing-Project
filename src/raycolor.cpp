@@ -28,7 +28,7 @@ bool raycolor(const Ray &ray, const double min_t,
   Eigen::Vector3d hit_point = ray.origin + t * ray.direction;
   rgb = blinn_phong_shading(ray, hit_id, t, n, objects, lights);
 
-  if (num_recursive_calls > 10) {
+  if (num_recursive_calls > 5) {
     return true;
   }
 
@@ -44,34 +44,34 @@ bool raycolor(const Ray &ray, const double min_t,
             .matrix();
   }
 
-  if (objects[hit_id]->material->kt < 0.95) {
+  if (objects[hit_id]->material->kt < 0.97) {
     rgb += rgb_temp_reflect;
+    return true;
   }
+
   // refraction
-  Eigen::Vector3d rgb_temp_refract(0, 0, 0);
   float kr;
   fresnel(ray.direction, n, 1.5, kr);
 
   // Total internal reflection
   if (kr >= 1) {
     rgb += rgb_temp_reflect;
+    return true;
   }
+
   bool outside = ray.direction.dot(n) < 0;
   Ray refrated_ray;
-
-  if (outside) {
-    refrated_ray.origin = hit_point - 1e-6 * n;
-  } else {
-    refrated_ray.origin = hit_point + 1e-6 * n;
-  }
-
+  refrated_ray.origin = outside ? hit_point - 1e-6 *n : refrated_ray.origin = hit_point + 1e-6 * n;
   refrated_ray.direction = refract(ray.direction, n, 1.5);
+
+  Eigen::Vector3d rgb_temp_refract(0, 0, 0);
   if (raycolor(refrated_ray, 1e-6, objects, lights, num_recursive_calls + 1,
                rgb_temp_refract)) {
     rgb += rgb_temp_reflect * kr + rgb_temp_refract * (1 - kr);
-    return true;
+  } else {
+    rgb += rgb_temp_reflect;
   }
-  rgb += rgb_temp_reflect;
+
   return true;
   ////////////////////////////////////////////////////////////////////////////
 }

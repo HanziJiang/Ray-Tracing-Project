@@ -19,8 +19,12 @@ int main(int argc, char * argv[])
   std::vector< std::shared_ptr<Object> > objects;
   std::vector< std::shared_ptr<Light> > lights;
   // Read a camera and scene description from given .json file
+
+  std::string scene_root_path = "../data/";
+  std::string file_name = (argc<=1?"leopard":argv[1]);
+  std::string suffix = ".json";
   read_json(
-    argc<=1?"../data/sphere-and-plane.json":argv[1],
+    scene_root_path + file_name + suffix,
     camera,
     objects,
     lights);
@@ -52,5 +56,5 @@ int main(int argc, char * argv[])
     }
   }
 
-  write_ppm("rgb.ppm",rgb_image,width,height,3);
+  write_ppm(file_name + ".ppm",rgb_image,width,height,3);
 }

@@ -22,9 +22,6 @@ void fresnel(const Eigen::Vector3d &in, const Eigen::Vector3d &n, const float &i
     float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
     kr = (Rs * Rs + Rp * Rp) / 2;
   }
-
-  // As a consequence of the conservation of energy, transmittance is given by:
-  // kt = 1 - kr;
 }
 
 Eigen::Vector3d refract(const Eigen::Vector3d &I, const Eigen::Vector3d &N, const float &ior) {
