@@ -4,7 +4,6 @@
 #include <limits>
 #include <memory>
 #include <vector>
-
 #include "Camera.h"
 #include "Light.h"
 #include "Object.h"

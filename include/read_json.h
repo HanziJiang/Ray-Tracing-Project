@@ -30,6 +30,7 @@ inline bool read_json(
 #include "dirname.h"
 #include "Object.h"
 #include "Sphere.h"
+#include "loop_subdivision.h"
 #include "Plane.h"
 #include "Triangle.h"
 #include "TriangleSoup.h"
@@ -153,8 +154,8 @@ inline bool read_json(
         objects.push_back(tri);
       }else if(jobj["type"] == "soup")
       {
-        std::vector<std::vector<double> > V;
-        std::vector<std::vector<double> > F;
+        std::vector<std::vector<double> > V, SV;
+        std::vector<std::vector<int> > F, SF;
         std::vector<std::vector<int> > N;
         {
 #if defined(WIN32) || defined(_WIN32)
@@ -163,6 +164,7 @@ inline bool read_json(
 #define PATH_SEPARATOR std::string("/")
 #endif
           const std::string stl_path = jobj["stl"];
+          std::cout << stl_path << "\n";
           igl::readSTL(
               igl::dirname(filename)+
               PATH_SEPARATOR +
@@ -170,13 +172,13 @@ inline bool read_json(
               V,F,N);
         }
         std::shared_ptr<TriangleSoup> soup(new TriangleSoup());
-        for(int f = 0;f<F.size();f++)
+        for(int f = 0;f<SF.size();f++)
         {
           std::shared_ptr<Triangle> tri(new Triangle());
           tri->corners = std::make_tuple(
-            Eigen::Vector3d( V[F[f][0]][0], V[F[f][0]][1], V[F[f][0]][2]),
-            Eigen::Vector3d( V[F[f][1]][0], V[F[f][1]][1], V[F[f][1]][2]),
-            Eigen::Vector3d( V[F[f][2]][0], V[F[f][2]][1], V[F[f][2]][2])
+            Eigen::Vector3d( SV[SF[f][0]][0], SV[SF[f][0]][1], SV[SF[f][0]][2]),
+            Eigen::Vector3d( SV[SF[f][1]][0], SV[SF[f][1]][1], SV[SF[f][1]][2]),
+            Eigen::Vector3d( SV[SF[f][2]][0], SV[SF[f][2]][1], SV[SF[f][2]][2])
           );
           soup->triangles.push_back(tri);
         }
