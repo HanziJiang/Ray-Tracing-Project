@@ -27,8 +27,8 @@ int main(int argc, char* argv[]) {
       objects,
       lights);
 
-  int width = 640;
-  int height = 360;
+  int width = 2240;
+  int height = 1290;
   std::vector<unsigned char> rgb_image(3 * width * height);
   // For each pixel (i,j)
   for (unsigned i = 0; i < height; ++i) {

@@ -1,0 +1,120 @@
+{
+  "camera": {
+    "type": "perspective",
+    "focal_length": 1,
+    "eye": [0, 0, 4],
+    "up": [0, 1, 0],
+    "look": [0, 0, -1],
+    "height": 1,
+    "width": 1.7777777778
+  },
+  "materials": [
+    {
+      "name": "gray mirror",
+      "ka": [0.1,0.1,0.1],
+      "kd": [0.2,0.2,0.2],
+      "ks": [0.1,0.1,0.1],
+      "km": [0.999,0.999,0.999],
+      "kt": 0,
+      "phong_exponent": 1000
+    },
+    {
+      "name": "dark gray",
+      "ka": [0.1,0.1,0.1],
+      "kd": [0.14,0.14,0.14],
+      "ks": [0.2,0.2,0.2],
+      "km": [0.05,0.05,0.05],
+      "kt": 0,
+      "phong_exponent": 200
+    },
+    {
+      "name": "glass",
+      "ka": [0.0,0.0,0.0],
+      "kd": [0,0,0],
+      "ks": [0.7,0.7,0.7],
+      "km": [0.05,0.05,0.05],
+      "kt": 1.0,
+      "phong_exponent": 200
+    },
+    {
+      "name": "gold",
+      "ka": [1.0, 0.7, 0.2],
+      "kd": [1.0, 0.7, 0.2],
+      "ks": [0.9, 0.9, 0.9],
+      "km": [0.05, 0.05, 0.05],
+      "kt": 0,
+      "phong_exponent": 1000
+    },
+    {
+      "name": "purple",
+      "ka": [1.0, 0.7, 0.2],
+      "kd": [0.4, 0.3, 0.7],
+      "ks": [0.8, 0.8, 0.8],
+      "km": [0.05, 0.05, 0.05],
+      "kt": 0,
+      "phong_exponent": 1000
+    },
+    {
+      "name": "green",
+      "ka": [0.5, 0.5, 0.9],
+      "kd": [0.3, 0.6, 0.2],
+      "ks": [0.2, 0.2, 0.2],
+      "km": [0.05, 0.05, 0.05],
+      "kt": 0,
+      "phong_exponent": 360
+    },
+    {
+      "name": "blue",
+      "ka": [0.5, 0.5, 0.9],
+      "kd": [0.53, 0.81, 0.99],
+      "ks": [0.2, 0.2, 0.2],
+      "km": [0.05, 0.05, 0.05],
+      "kt": 0,
+      "phong_exponent": 360
+    }
+  ],
+  "lights": [
+    {
+      "type": "directional",
+      "direction": [0,2,-2],
+      "color": [0.4,0.2,0.2]
+    },
+    {
+      "type": "point",
+      "color": [0.8,0.8,0.8],
+      "position": [1.2,2.7,2]
+    }
+  ],
+  "objects": [
+    {
+      "type": "plane",
+      "material": "green",
+      "point": [0, 0, -24],
+      "normal": [0, 0, 1]
+    },
+    {
+      "type": "sphere",
+      "material": "glass",
+      "center": [0,0,0],
+      "radius": 0.8
+    },
+    {
+      "type": "sphere",
+      "material": "blue",
+      "center": [7,-3,-17],
+      "radius": 1.4
+    },
+    {
+      "type": "sphere",
+      "material": "gold",
+      "center": [-4,-1,-6],
+      "radius": 1.4
+    },
+    {
+      "type": "sphere",
+      "material": "purple",
+      "center": [0,5,-12],
+      "radius": 1.4
+    }
+  ]
+}
