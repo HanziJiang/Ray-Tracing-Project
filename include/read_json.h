@@ -175,21 +175,22 @@ inline bool read_json(
           }
           objects.push_back(soup);
         } else {
-          Eigen::MatrixXd V_obj;
-          Eigen::MatrixXi F_obj;
+          Eigen::MatrixXd V_obj, SV_obj;
+          Eigen::MatrixXi F_obj, SF_obj;
           {
             igl::readOBJ(igl::dirname(filename) +
                              PATH_SEPARATOR +
                              mesh_path,
                          V_obj, F_obj);
           }
+          loop_subdivision(V_obj, F_obj, 0, SV_obj, SF_obj);
           std::shared_ptr<TriangleSoup> soup(new TriangleSoup());
           for (int f = 0; f < F_obj.rows(); f++) {
             std::shared_ptr<Triangle> tri(new Triangle());
             tri->corners = std::make_tuple(
-                Eigen::Vector3d(V_obj(F_obj(f, 0), 0), V_obj(F_obj(f, 0), 1), V_obj(F_obj(f, 0), 2)),
-                Eigen::Vector3d(V_obj(F_obj(f, 1), 0), V_obj(F_obj(f, 1), 1), V_obj(F_obj(f, 1), 2)),
-                Eigen::Vector3d(V_obj(F_obj(f, 2), 0), V_obj(F_obj(f, 2), 1), V_obj(F_obj(f, 2), 2)));
+                Eigen::Vector3d(SV_obj(SF_obj(f, 0), 0), SV_obj(SF_obj(f, 0), 1), SV_obj(SF_obj(f, 0), 2)),
+                Eigen::Vector3d(SV_obj(SF_obj(f, 1), 0), SV_obj(SF_obj(f, 1), 1), SV_obj(SF_obj(f, 1), 2)),
+                Eigen::Vector3d(SV_obj(SF_obj(f, 2), 0), SV_obj(SF_obj(f, 2), 1), SV_obj(SF_obj(f, 2), 2)));
             soup->triangles.push_back(tri);
           }
           objects.push_back(soup);

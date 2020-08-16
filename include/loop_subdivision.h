@@ -1,6 +1,6 @@
 #ifndef LOOP_SUBDIVISION_H
 #define LOOP_SUBDIVISION_H
-#include <iostream>
+#include <Eigen/Core>
 
 // Conduct num_iters iterations of Charles-Loop subdivision on a **pure trig**
 // mesh (V,F).
@@ -14,9 +14,9 @@
 //   SF  #SF by 3 list of trig mesh indices into SV
 //
 void loop_subdivision(
-    const std::vector<std::vector<double>>& V,
-    const std::vector<std::vector<int>>& F,
+    const Eigen::MatrixXd& V,
+    const Eigen::MatrixXi& F,
     const int num_iters,
-    std::vector<std::vector<double>>& SV,
-    std::vector<std::vector<int>>& SF);
+    Eigen::MatrixXd& SV,
+    Eigen::MatrixXi& SF);
 #endif

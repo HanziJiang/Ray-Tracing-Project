@@ -1,28 +1,10 @@
 #include "loop_subdivision.h"
 
 #include <functional>
+#include <iostream>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-template <typename T> 
-std::vector<T> add(const std::vector<T>& V1, const std::vector<T>& V2) {
-  assert(V1.size() == V2.size());
-  std::vector<T> V3(V1.size());
-  for (int i = 0; i < V1.size(); i++) {
-    V3[i] = V1[i] + V2[i];
-  }
-  return V3;
-}
-
-template <typename T> 
-std::vector<T> times(const std::vector<T>& V1, const double num) {
-  std::vector<T> V(V1.size());
-  for (int i = 0; i < V1.size(); i++) {
-    V[i] = V1[i] * num;
-  }
-  return V;
-}
 
 struct hash_pair {
   template <class T1, class T2>
@@ -34,40 +16,22 @@ struct hash_pair {
 };
 
 void loop_subdivision(
-    const std::vector<std::vector<double>>& V,
-    const std::vector<std::vector<int>>& F,
+    const Eigen::MatrixXd& V,
+    const Eigen::MatrixXi& F,
     const int num_iters,
-    std::vector<std::vector<double>>& SV,
-    std::vector<std::vector<int>>& SF) {
+    Eigen::MatrixXd& SV,
+    Eigen::MatrixXi& SF) {
   ////////////////////////////////////////////////////////////////////////////
-  if (num_iters <= 0 || V.size() == 0 || F.size() == 0 || V[0].size() == 0 || F[0].size() == 0) {
+  if (num_iters <= 0) {
+    SV.resize(V.rows(), V.cols());
     SV = V;
+    SF.resize(F.rows(), F.cols());
     SF = F;
     return;
   }
 
-  std::cout << "\n\n\nV\n";
-  std::cout << "size:" << V.size() << "\n";
-  for (auto obj : V) {
-    for (auto oo: obj) {
-      std::cout << oo << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
-
-  std::cout << "\n\n\nF\n";
-  std::cout << "size:" << F.size() << "\n";
-  for (auto obj : F) {
-    for (auto oo: obj) {
-      std::cout << oo << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
-
-  const int V_rows = V.size();
-  const int F_rows = F.size();
+  const int V_rows = V.rows();
+  const int F_rows = F.rows();
 
   // build edge to (one or two) faces
   std::unordered_map<std::pair<int, int>, std::vector<int>, hash_pair> edge_to_faces;
@@ -76,8 +40,8 @@ void loop_subdivision(
 
   for (int i = 0; i < F_rows; i++) {
     for (int j = 0; j < 3; j++) {
-      current_vertex_index = F[i][j];
-      next_vertex_index = F[i][(j + 1) % 3];
+      current_vertex_index = F(i, j);
+      next_vertex_index = F(i, (j + 1) % 3);
       pair = (current_vertex_index <= next_vertex_index) ? std::make_pair(current_vertex_index, next_vertex_index) : std::make_pair(next_vertex_index, current_vertex_index);
       if (edge_to_faces.find(pair) == edge_to_faces.end()) {
         std::vector<int> entry;
@@ -87,8 +51,8 @@ void loop_subdivision(
     }
   }
 
-  SV.resize(V_rows + edge_to_faces.size());
-  SF.resize(4 * F_rows);
+  SV.resize(V_rows + edge_to_faces.size(), 3);
+  SF.resize(4 * F_rows, 3);
 
   // build vertex to neightboring vertices
   std::unordered_map<int, std::vector<int>> vertex_to_vertices;
@@ -113,10 +77,11 @@ void loop_subdivision(
   }
 
   std::vector<int> faces;
-  std::vector<double> position(3), A(3), B(3), C(3), D(3);
+  Eigen::RowVector3d position, A, B, C, D;
   std::vector<int> neighbour_vertices;
   int size;
   float BETA;
+
   // Add (modified) old vertices into SV
   int SV_index = 0;
   for (int i = 0; i < V_rows; i++) {
@@ -124,18 +89,18 @@ void loop_subdivision(
     size = neighbour_vertices.size();
     if (size == 2) {
       // Boundary vertex
-      A = V[neighbour_vertices[0]];
-      B = V[neighbour_vertices[1]];
-      position = add(times(add(A, B), 1.0 / 8.0), times(V[i], 3.0 / 4.0));
+      A = V.row(neighbour_vertices[0]);
+      B = V.row(neighbour_vertices[1]);
+      position = 1.0 / 8.0 * (A + B) + 3.0 / 4.0 * V.row(i);
     } else {
       // Interior vertex
       BETA = 1.0 / size * (5.0 / 8.0 - (3.0 / 8.0 + 1.0 / 4.0 * cos(2.0 * M_PI / size)) * (3.0 / 8.0 + 1.0 / 4.0 * cos(2.0 * M_PI / size)));
-      position = times(V[i], 1 - size * BETA);
+      position = V.row(i) * (1 - size * BETA);
       for (int w = 0; w < size; w++) {
-        position = add(position, times(V[neighbour_vertices[w]], BETA));
+        position += BETA * V.row(neighbour_vertices[w]);
       }
     }
-    SV[SV_index++] = position;
+    SV.row(SV_index++) = position;
   }
 
   // Add new (edge) points to SV and populate edge_to_SV
@@ -144,69 +109,44 @@ void loop_subdivision(
     pair = entry.first;
     faces = entry.second;
     if (faces.size() == 2) {
-      A = V[pair.first];
-      B = V[pair.second];
+      A = V.row(pair.first);
+      B = V.row(pair.second);
       for (int j = 0; j < 3; j++) {
-        if (F[faces[0]][j] != pair.first && F[faces[0]][j] != pair.second) {
-          C = V[F[faces[0]][j]];
+        if (F(faces[0], j) != pair.first && F(faces[0], j) != pair.second) {
+          C = V.row(F(faces[0], j));
           break;
         }
       }
       for (int j = 0; j < 3; j++) {
-        if (F[faces[1]][j] != pair.first && F[faces[1]][j] != pair.second) {
-          D = V[F[faces[0]][j]];
+        if (F(faces[1], j) != pair.first && F(faces[1], j) != pair.second) {
+          D = V.row(F(faces[0], j));
           break;
         }
       }
-      position = add(times(add(A, B), 3.0 / 8.0), times(add(C, D), 1.0 / 8.0));
+      position = 3.0 / 8.0 * (A + B) + 1.0 / 8.0 * (C + D);
     } else if (faces.size() == 1) {
-      A = V[pair.first];
-      B = V[pair.second];
-      position = times(add(A, B), 1.0 / 2.0);
+      A = V.row(pair.first);
+      B = V.row(pair.second);
+      position = 1.0 / 2.0 * (A + B);
     } else {
       std::cerr << "Edge connects to " << faces.size() << " faces\n";
     }
-    SV[SV_index] = position;
+    SV.row(SV_index) = position;
     edge_to_SV[pair] = SV_index;
     SV_index++;
   }
+
   // Populate SF
   for (int i = 0; i < F_rows; i++) {
     for (int j = 0; j < 3; j++) {
-      SF[i * 4 + j].resize(3);
-      SF[i * 4 + 3].resize(3);
-      SF[i * 4 + j][0] = F[i][j];
-      pair = (F[i][j] <= F[i][(j + 1) % 3]) ? std::make_pair(F[i][j], F[i][(j + 1) % 3]) : std::make_pair(F[i][(j + 1) % 3], F[i][j]);
-      SF[i * 4 + j][1] = edge_to_SV[pair];
-      SF[i * 4 + 3][j] = SF[i * 4 + j][1];
-      pair = (F[i][j] <= F[i][(j + 2) % 3]) ? std::make_pair(F[i][j], F[i][(j + 2) % 3]) : std::make_pair(F[i][(j + 2) % 3], F[i][j]);
-      SF[i * 4 + j][2] = edge_to_SV[pair];
+      SF(i * 4 + j, 0) = F(i, j);
+      pair = (F(i, j) <= F(i, (j + 1) % 3)) ? std::make_pair(F(i, j), F(i, (j + 1) % 3)) : std::make_pair(F(i, (j + 1) % 3), F(i, j));
+      SF(i * 4 + j, 1) = edge_to_SV[pair];
+      SF(i * 4 + 3, j) = SF(i * 4 + j, 1);
+      pair = (F(i, j) <= F(i, (j + 2) % 3)) ? std::make_pair(F(i, j), F(i, (j + 2) % 3)) : std::make_pair(F(i, (j + 2) % 3), F(i, j));
+      SF(i * 4 + j, 2) = edge_to_SV[pair];
     }
   }
-  std::vector<std::vector<double>> SV_copy = SV;
-  std::vector<std::vector<int>> SF_copy = SF;
-
-  std::cout << "\n\n\nSV\n";
-  std::cout << "size:" << SV.size() << "\n";
-  for (auto obj : SV) {
-    for (auto oo: obj) {
-      std::cout << oo << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
-
-
-  std::cout << "\n\n\nSF\n";
-  std::cout << "size:" << SF.size() << "\n";
-  for (auto obj : SF) {
-    for (auto oo: obj) {
-      std::cout << oo << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
-
-  loop_subdivision(SV_copy, SF_copy, num_iters - 1, SV, SF);
+  loop_subdivision(Eigen::MatrixXd(SV), Eigen::MatrixXi(SF), num_iters - 1, SV, SF);
   ////////////////////////////////////////////////////////////////////////////
 }
