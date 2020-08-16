@@ -13,17 +13,13 @@ The precentage of light reflected and refracted is determined by the angle of in
 Since the Catmull-Clark subdivision in A5 only works for quad meshes, I implemented the Charles-Loop subdivision for triangular meshes. This subdivision scheme can be found in [this paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/thesis-10.pdf). The output looks quite smooth.
 The subdivision rules are based on properties of B-spline and many other multivariate spline theories. Subdivision surfaces are defined recursively, and each triangle is divided into four smaller ones. The procedure can be summarized into four phases:
 1. Build Adjacency Data Structure
-
-I mapped each edge (represented by a `std::pair`) to its adjacent faces. Then I mapped each vertex to its neighbouring vertices. 
+⋅⋅⋅I mapped each edge (represented by a `std::pair`) to its adjacent faces. Then I mapped each vertex to its neighbouring vertices. 
 2. Compute Edge Vertices
-
-A triangle has three origional vertices and three edge vertices. If an edge is not at crease or boundary, the edge point is a linear combination of the four vertices of the two faces adjacent to this edge. Otherwise, the edge point is only a linear combination of the two vertices connected by this edge. The weights are fixed.
+⋅⋅⋅A triangle has three origional vertices and three edge vertices. If an edge is not at crease or boundary, the edge point is a linear combination of the four vertices of the two faces adjacent to this edge. Otherwise, the edge point is only a linear combination of the two vertices connected by this edge. The weights are fixed.
 3. Recompute Original Vertices
-
-Each original vertex is recomputed as a linear combination of the vertex itself, and all its neighbouring vertices. The weights are determined by a value \beta, which is determined by the number of neighbouring vertices.
+⋅⋅⋅Each original vertex is recomputed as a linear combination of the vertex itself, and all its neighbouring vertices. The weights are determined by a value \beta, which is determined by the number of neighbouring vertices.
 4. Rebuild Mesh
-
-First recomputed original vertices are added in their original order. Then edge vertices are added in arbitrary order. At the same time, a map is built. The key is an edge, value the row number of the new vertices matrix that the edge vertex corresponds to. Finally, I populated the new faces matrix.
+⋅⋅⋅First recomputed original vertices are added in their original order. Then edge vertices are added in arbitrary order. At the same time, a map is built. The key is an edge, value the row number of the new vertices matrix that the edge vertex corresponds to. Finally, I populated the new faces matrix.
 
 
 In `read_json.h`, I subdivide the meshes before writing them into the TriangleSoup for a smoother sppearance.
@@ -40,8 +36,6 @@ Icosahedron, 5 iterations.
 
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/cow.gif)
 Cow, 2 iterations.
-
-
 To reproduce the above images, checkout my [loop_subdivision project](https://github.com/HanziJiang/loop_subdivision).
 
 #### Read both .obj and .stl
