@@ -34,6 +34,8 @@ Cow, 2 iterations.
 
 To reproduce the above images, checkout my [loop_subdivision project](https://github.com/HanziJiang/loop_subdivision).
 
+In `read_json.h`, I subdivide the meshes before writing them into the TriangleSoup for a smoother sppearance.
+
 #### Read both .obj and .stl
 Since some of my favourite meshes are in .obj, some in .stl, I make my project take both file formats as inputs. This is done by checking the file extension in `read_json.h`. `readOBJ.cpp` and relating files are imported from other projects.
 
