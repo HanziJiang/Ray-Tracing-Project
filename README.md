@@ -1,9 +1,13 @@
 # Computer Graphics Final Project
 ## New Tasks
 #### Refraction
-Refraction is implemented adopting [this method](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel).
+Refraction is implemented using [this method](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel). Refraction exits in everyday life, that's why I added it to my ray tracing project. Here is how I implemented it:
+First I add `kt` (transparency index) and `ior` (index of refraction) attributes to the Material class. In `raycolor.cpp`, I determine if the hit object is transmissive based on `kt`. If no, the code is the same as the original, we have Blinn-Phong and reflection. If yes, we also have refraction. How much light is refracted vs reflected is determined by `fresnel`. The direction of refrated light is determined by `refract`. I assume the `ior` of air is 1.0. 
+In `refract`, [Snell's Law](https://en.wikipedia.org/wiki/Snell%27s_law) seems simple, but there are a few things we need to pay attention to. First, before taking the ratio of the two iors, we need to know if the ray is hiting the object from outside or inside. This can be done by checking the sign of the dot product of the ray direction and normal vector. If outside, we need to invert the sign of the normal vector. We also need to check when total internal reflection occurs. That is, when the angle is greater than the critical angle, the ray is 100% reflected.
+![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/refract.png)
+
 #### Fresnel Effect
-Use Fresnel's Equations defines how much light is reflected and transmitted for transparent materials. The method can be found [here](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel).
+The precentage of light reflected and refracted is determined by the angle of incidence. It can be calculated using [Fresnel's Equations](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel). We must also deal with total internal reflection when calculating.
 
 #### Charles-Loop Subdivision
 Since the Catmull-Clark subdivision in A5 only works for quad meshes, I implemented the Charles-Loop subdivision for triangular meshes. This subdivision scheme can be found in [this paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/thesis-10.pdf). The output looks quite smooth.
@@ -19,7 +23,7 @@ First recomputed original vertices are added in their original order. Then edge 
 
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/comparison.gif)
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/comparison_video.gif)
-Charles-Loop subdivision and Catmull-Clark subdivision, 5 iterations.
+Charles-Loop subdivision and Catmull-Clark subdivision, 5 iterations. 
 
 Some other outputs:
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/icosahedron.gif)
@@ -27,6 +31,13 @@ Icosahedron, 5 iterations.
 
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/cow.gif)
 Cow, 2 iterations.
+
+To reproduce the above images, checkout my [loop_subdivision project](https://github.com/HanziJiang/loop_subdivision).
+
+#### Read both .obj and .stl
+Since some of my favourite meshes are in .obj, some in .stl, I make my project take both file formats as inputs. This is done by checking the file extension in `read_json.h`. `readOBJ.cpp` and relating files are imported from other projects.
+
+
 ## Task in Progress
 It would be great to use BVH to accelerate the ray tracing progress. However, having to prepare for other course projects and exams, I was unable to finish the task. I have commented out BVH related code. My attempt was make `blinn_phong_shading` and `first_hit` take an AABBTree and descendant as arguments instead of a list of objects and hit_id. Each object had an box attribute. Related functions such as `insert_triangle_into_box` were implemented but commented out. Each object in the scene file was an AABB tree, together they formed a large AABB tree.
 
