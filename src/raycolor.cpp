@@ -26,30 +26,27 @@ bool raycolor(const Ray &ray, const double min_t,
     return false;
   }
 
-  const bool is_transparent = objects[hit_id]->material->kt > 0.97;
-
   Eigen::Vector3d hit_point = ray.origin + t * ray.direction;
-  Eigen::Vector3d bf_color = blinn_phong_shading(ray, hit_id, t, n, objects, lights);
+  rgb = blinn_phong_shading(ray, hit_id, t, n, objects, lights);
 
   if (num_recursive_calls > 5) {
-    if (!is_transparent) rgb = bf_color;
     return true;
   }
 
   // reflection
-  Eigen::Vector3d reflect_color(0, 0, 0);
+  Eigen::Vector3d rgb_temp_reflect(0, 0, 0);
   Ray reflected_ray;
   reflected_ray.origin = ray.origin + ray.direction * t;
   reflected_ray.direction = reflect(ray.direction, n);
   if (raycolor(reflected_ray, 1e-6, objects, lights, num_recursive_calls + 1,
-               reflect_color)) {
-    reflect_color =
-        (objects[hit_id]->material->km.array() * reflect_color.array())
+               rgb_temp_reflect)) {
+    rgb_temp_reflect =
+        (objects[hit_id]->material->km.array() * rgb_temp_reflect.array())
             .matrix();
   }
 
-  if (!is_transparent) {
-    rgb = reflect_color + bf_color;
+  if (objects[hit_id]->material->kt < 0.97) {
+    rgb += rgb_temp_reflect;
     return true;
   }
 
@@ -59,7 +56,7 @@ bool raycolor(const Ray &ray, const double min_t,
 
   // Total internal reflection
   if (kr >= 1) {
-    rgb = reflect_color;
+    rgb += rgb_temp_reflect;
     return true;
   }
 
@@ -68,14 +65,12 @@ bool raycolor(const Ray &ray, const double min_t,
   refrated_ray.origin = outside ? hit_point - 1e-6 *n : refrated_ray.origin = hit_point + 1e-6 * n;
   refrated_ray.direction = refract(ray.direction, n, 1.5);
 
-  Eigen::Vector3d refract_color(0, 0, 0);
+  Eigen::Vector3d rgb_temp_refract(0, 0, 0);
   if (raycolor(refrated_ray, 1e-6, objects, lights, num_recursive_calls + 1,
-               refract_color)) {
-    rgb = reflect_color * kr + refract_color * (1 - kr);
-    // on the sphere
-    //PRINT_VEC(rgb);
+               rgb_temp_refract)) {
+    rgb += rgb_temp_reflect * kr + rgb_temp_refract * (1 - kr);
   } else {
-    rgb = reflect_color + bf_color;
+    rgb += rgb_temp_reflect;
   }
 
   return true;
@@ -106,19 +101,19 @@ bool raycolor(const Ray &ray, const double min_t,
 //   }
 
 //   // reflection
-//   Eigen::Vector3d reflect_color(0, 0, 0);
+//   Eigen::Vector3d rgb_temp_reflect(0, 0, 0);
 //   Ray reflected_ray;
 //   reflected_ray.origin = ray.origin + ray.direction * t;
 //   reflected_ray.direction = reflect(ray.direction, n);
 //   if (raycolor(reflected_ray, 1e-6, tree, lights, num_recursive_calls + 1,
-//                reflect_color)) {
-//     reflect_color =
-//         (descendant->material->km.array() * reflect_color.array())
+//                rgb_temp_reflect)) {
+//     rgb_temp_reflect =
+//         (descendant->material->km.array() * rgb_temp_reflect.array())
 //             .matrix();
 //   }
 
 //   if (descendant->material->kt < 0.97) {
-//     rgb += reflect_color;
+//     rgb += rgb_temp_reflect;
 //     return true;
 //   }
 
@@ -128,7 +123,7 @@ bool raycolor(const Ray &ray, const double min_t,
 
 //   // Total internal reflection
 //   if (kr >= 1) {
-//     rgb += reflect_color;
+//     rgb += rgb_temp_reflect;
 //     return true;
 //   }
 
@@ -137,12 +132,12 @@ bool raycolor(const Ray &ray, const double min_t,
 //   refrated_ray.origin = outside ? hit_point - 1e-6 *n : refrated_ray.origin = hit_point + 1e-6 * n;
 //   refrated_ray.direction = refract(ray.direction, n, 1.5);
 
-//   Eigen::Vector3d refract_color(0, 0, 0);
+//   Eigen::Vector3d rgb_temp_refract(0, 0, 0);
 //   if (raycolor(refrated_ray, 1e-6, tree, lights, num_recursive_calls + 1,
-//                refract_color)) {
-//     rgb += reflect_color * kr + refract_color * (1 - kr);
+//                rgb_temp_refract)) {
+//     rgb += rgb_temp_reflect * kr + rgb_temp_refract * (1 - kr);
 //   } else {
-//     rgb += reflect_color;
+//     rgb += rgb_temp_reflect;
 //   }
 
 //   return true;
