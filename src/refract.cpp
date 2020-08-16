@@ -26,13 +26,12 @@ void fresnel(const Eigen::Vector3d &in, const Eigen::Vector3d &n, const float &i
 
 Eigen::Vector3d refract(const Eigen::Vector3d &I, const Eigen::Vector3d &N, const float &ior) {
   float cosi = I.dot(N);
-  if (cosi < -1)
-    cosi = -1;
-  else if (cosi > 1)
-    cosi = 1;
+  if (cosi < -1) cosi = -1;
+  else if (cosi > 1) cosi = 1;
   float etai = 1, etat = ior;
   Eigen::Vector3d n = N;
-  if (cosi < 0) {
+  const bool outside = cosi < 0;
+  if (outside) {
     cosi = -cosi;
   } else {
     std::swap(etai, etat);
