@@ -6,11 +6,8 @@
 #include "first_hit.h"
 #include "reflect.h"
 #include "refract.h"
+#include "fresnel.h"
 //#include "AABBTree.h"
-
-#define PRINT_VEC(d) \
-  (std::cout << #d << ": " << d(0) << ", " << d(1) << ", " << d(2) << "\n")
-#define PRINT_NUM(d) (std::cout << #d << ": " << d << "\n")
 
 bool raycolor(const Ray &ray, const double min_t,
               const std::vector<std::shared_ptr<Object>> &objects,
@@ -51,8 +48,9 @@ bool raycolor(const Ray &ray, const double min_t,
   }
 
   // refraction
-  float kr;
-  fresnel(ray.direction, n, 1.5, kr);
+  double kr;
+  const double ior = objects[hit_id]->material->ior;
+  fresnel(ray.direction, n, ior, kr);
 
   // Total internal reflection
   if (kr >= 1) {
@@ -63,7 +61,7 @@ bool raycolor(const Ray &ray, const double min_t,
   bool outside = ray.direction.dot(n) < 0;
   Ray refrated_ray;
   refrated_ray.origin = outside ? hit_point - 1e-6 *n : refrated_ray.origin = hit_point + 1e-6 * n;
-  refrated_ray.direction = refract(ray.direction, n, 1.5);
+  refrated_ray.direction = refract(ray.direction, n, ior);
 
   Eigen::Vector3d rgb_temp_refract(0, 0, 0);
   if (raycolor(refrated_ray, 1e-6, objects, lights, num_recursive_calls + 1,
@@ -76,7 +74,6 @@ bool raycolor(const Ray &ray, const double min_t,
   return true;
   ////////////////////////////////////////////////////////////////////////////
 }
-
 
 // bool raycolor(const Ray &ray, const double min_t,
 //               const std::shared_ptr<AABBTree>& tree,
@@ -118,7 +115,7 @@ bool raycolor(const Ray &ray, const double min_t,
 //   }
 
 //   // refraction
-//   float kr;
+//   double kr;
 //   fresnel(ray.direction, n, 1.5, kr);
 
 //   // Total internal reflection

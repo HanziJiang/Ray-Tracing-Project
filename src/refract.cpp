@@ -1,44 +1,27 @@
 #include <Eigen/Core>
+#include "refract.h"
+// Reference: https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
 
-void fresnel(const Eigen::Vector3d &in, const Eigen::Vector3d &n, const float &ior, float &kr) {
-  float cosi = in.dot(n);
+Eigen::Vector3d refract(const Eigen::Vector3d &in, const Eigen::Vector3d &n, const double &ior) {
+  double cosi = in.dot(n);
   if (cosi < -1)
     cosi = -1;
   else if (cosi > 1)
     cosi = 1;
-  float etai = 1, etat = ior;
+
+  double ior_1 = 1.0, ior_2 = ior;
+
+  Eigen::Vector3d n_copy = n;
+
+  cosi = std::abs(cosi);
+
+  // From inside of object to outside
   if (cosi > 0) {
-    std::swap(etai, etat);
+    std::swap(ior_1, ior_2);
+    n_copy = -n;
   }
-  // Compute sini using Snell's law
-  float sint = etai / etat * sqrtf(std::max(0.f, 1 - cosi * cosi));
-  // Total internal reflection
-  if (sint >= 1) {
-    kr = 1;
-  } else {
-    float cost = sqrtf(std::max(0.f, 1 - sint * sint));
-    cosi = fabsf(cosi);
-    float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
-    float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
-    kr = (Rs * Rs + Rp * Rp) / 2;
-  }
-}
-
-Eigen::Vector3d refract(const Eigen::Vector3d &I, const Eigen::Vector3d &N, const float &ior) {
-  float cosi = I.dot(N);
-  if (cosi < -1)
-    cosi = -1;
-  else if (cosi > 1)
-    cosi = 1;
-  float etai = 1, etat = ior;
-  Eigen::Vector3d n = N;
-  if (cosi < 0) {
-    cosi = -cosi;
-  } else {
-    std::swap(etai, etat);
-    n = -N;
-  }
-  float eta = etai / etat;
-  float k = 1 - eta * eta * (1 - cosi * cosi);
-  return ((k < 0) ? Eigen::Vector3d(0, 0, 0) : (eta * I + (eta * cosi - sqrtf(k)) * n)).normalized();
+  
+  double ratio = ior_1 / ior_2;
+  double k = 1 - ratio * ratio * (1 - cosi * cosi);
+  return ((k < 0) ? Eigen::Vector3d(0.0, 0.0, 0.0) : (ratio * in + (ratio * cosi - sqrt(k)) * n_copy)).normalized();
 }
