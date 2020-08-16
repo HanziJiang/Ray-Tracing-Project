@@ -2,8 +2,11 @@
 ## New Tasks
 ### Refraction
 Refraction exits in everyday life, that's why I added it to my ray tracing project. It is implemented using [this method](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel). Here is my implementation:
+
 First I add `kt` (transparency index) and `ior` (index of refraction) attributes to the Material class. In `raycolor.cpp`, I determine if the hit object is transmissive based on `kt`. If no, the code is the same as the original, we have Blinn-Phong and reflection. If yes, we also have refraction. How much light is refracted vs reflected is determined by `fresnel`. The direction of refrated light is determined by `refract`. I assume the `ior` of air is 1.0. 
+
 In `refract`, [Snell's Law](https://en.wikipedia.org/wiki/Snell%27s_law) seems simple, but there are a few things we need to pay attention to. First, before taking the ratio of the two iors, we need to know if the ray is hiting the object from outside or inside. This can be done by checking the sign of the dot product of the ray direction and normal vector. If outside, we need to invert the sign of the normal vector. We also need to check when total internal reflection occurs. That is, when the angle is greater than the critical angle, the ray is 100% reflected.
+
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/refract.png)
 
 ### Fresnel Effect
