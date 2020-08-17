@@ -183,7 +183,7 @@ inline bool read_json(
                              mesh_path,
                          V_obj, F_obj);
           }
-          loop_subdivision(V_obj, F_obj, 0, SV_obj, SF_obj);
+          loop_subdivision(V_obj, F_obj, 2, SV_obj, SF_obj);
           std::shared_ptr<TriangleSoup> soup(new TriangleSoup());
           for (int f = 0; f < F_obj.rows(); f++) {
             std::shared_ptr<Triangle> tri(new Triangle());
