@@ -5,7 +5,7 @@ Refraction exits in everyday life, that's why I added it to my ray tracing proje
 
 First I add `kt` (transparency index) and `ior` (index of refraction) attributes to the Material class. In `raycolor.cpp`, I determine if the hit object is transmissive based on `kt`. If no, the code is the same as the original, we have Blinn-Phong and reflection. If yes, we also have refraction. How much light is refracted vs reflected is determined by `fresnel`. The direction of refrated light is determined by `refract`. I assume the `ior` of air is 1.0. 
 
-In `refract`, [Snell's Law](https://en.wikipedia.org/wiki/Snell%27s_law) seems simple, but there are a few things we need to pay attention to. First, before taking the ratio of the two iors, we need to know if the ray is hiting the object from outside or inside. This can be done by checking the sign of the dot product of the ray direction and normal vector. If outside, we need to invert the sign of the normal vector. We also need to check when total internal reflection occurs. That is, when the angle is greater than the critical angle, the ray is 100% reflected.
+[Snell's Law](https://en.wikipedia.org/wiki/Snell%27s_law) seems simple, but there are a few things we need to pay attention to. First, before taking the ratio of the two iors, we need to know if the ray is hiting the object from outside or inside. This can be done by checking the sign of the dot product of the ray direction and normal vector. If from inside, we need to invert the sign of the normal vector. We also need to check when total internal reflection occurs. That is, when the angle is greater than the critical angle, the ray is all reflected.
 
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/refract.png)
 
@@ -20,13 +20,13 @@ The subdivision rules are based on properties of B-spline and many other multiva
    I mapped each edge (represented by a `std::pair`) to its adjacent faces. Then I mapped each vertex to its neighbouring vertices. 
 2. Compute Edge Vertices
 
-   A triangle has three origional vertices and three edge vertices. If an edge is not at crease or boundary, the edge point is a linear combination of the four vertices of the two faces adjacent to this edge. Otherwise, the edge point is only a linear combination of the two vertices connected by this edge. The weights are fixed.
+   A triangle has three origional vertices and three new edge vertices. If an edge is not at crease or boundary, the edge point is a linear combination of the four vertices of the two faces adjacent to this edge. Otherwise, the edge point is only a linear combination of the two vertices connected by this edge. The weights are fixed.
 3. Recompute Original Vertices
 
-   Each original vertex is recomputed as a linear combination of the vertex itself, and all its neighbouring vertices. The weights are determined by a value \beta, which is determined by the number of neighbouring vertices.
+   Each original vertex is recomputed as a linear combination of the vertex itself and all its neighbouring vertices. The weights are determined by a value beta, which is determined by the number of neighbouring vertices.
 4. Rebuild Mesh
 
-   First recomputed original vertices are added in their original order. Then edge vertices are added in arbitrary order. At the same time, a map is built. The key is an edge, value the row number of the new vertices matrix that the edge vertex corresponds to. Finally, I populated the new faces matrix.
+   First recomputed original vertices are added in their original order. Then edge vertices are added in arbitrary order. In the mean time, a map is built. The key is an edge, value the row number of the new vertices matrix that the edge vertex corresponds to. This allows me to keep track where is the edge vertex. Finally, I populated the new faces matrix.
 
 
 In `read_json.h`, I subdivide the meshes before writing them into the TriangleSoup for a smoother sppearance.
@@ -50,9 +50,11 @@ Since some of my favourite meshes are in .obj, some in .stl, I make my project t
 
 
 ## Task in Progress
-It would be great to use BVH to accelerate the ray tracing progress. However, having to prepare for other course projects and exams, I was unable to finish the task. I have commented out BVH related code. My attempt was make `blinn_phong_shading` and `first_hit` take an AABBTree and descendant as arguments instead of a list of objects and hit_id. Each object had an box attribute. Related functions such as `insert_triangle_into_box` were implemented but commented out. Each object in the scene file was an AABB tree, together they formed a large AABB tree.
+It would be great to use BVH to accelerate the ray tracing progress. However, having to prepare for other course projects and exams, I was unable to finish the task. I have commented out BVH related code. My attempt was make `blinn_phong_shading` and `first_hit` take an AABBTree and descendant as arguments instead of a list of objects and hit_id. Each object had an box attribute. Related functions such as `insert_triangle_into_box` were implemented. Each object in the scene file was an AABB tree, together they formed a large AABB tree.
+
 
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/the_catch.png)
+
 The catch.
 
 ## Running the Project
