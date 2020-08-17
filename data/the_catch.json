@@ -24,6 +24,16 @@
 
   "materials": [
     {
+      "name": "glass",
+      "ka": [0.0,0.0,0.0],
+      "kd": [0,0,0],
+      "ks": [0.7,0.7,0.7],
+      "km": [0.05,0.05,0.05],
+      "kt": 1.0,
+      "ior": 1.5,
+      "phong_exponent": 200
+    },
+    {
       "name": "matte gray",
       "ka": [0.90, 0.90, 0.90],
       "kd": [0.95, 0.95, 0.95],
@@ -45,6 +55,36 @@
     }
   ],
   "objects": [
+    {
+      "type": "sphere",
+      "material": "glass",
+      "center": [0,3,-11],
+      "radius": 0.7
+    },
+    {
+      "type": "sphere",
+      "material": "glass",
+      "center": [3,5,-11],
+      "radius": 0.7
+    },
+    {
+      "type": "sphere",
+      "material": "glass",
+      "center": [6,3,-11],
+      "radius": 0.7
+    },
+    {
+      "type": "sphere",
+      "material": "glass",
+      "center": [-3,5,-11],
+      "radius": 0.7
+    },
+    {
+      "type": "sphere",
+      "material": "glass",
+      "center": [-6,3,-11],
+      "radius": 0.7
+    },
     {
       "type": "soup",
       "material": "matte gray",

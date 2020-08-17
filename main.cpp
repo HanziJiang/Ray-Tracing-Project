@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
   // Read a camera and scene description from given .json file
 
   std::string scene_root_path = "../data/";
-  std::string file_name = (argc <= 1 ? "leopard" : argv[1]);
+  std::string file_name = (argc <= 1 ? "the_catch" : argv[1]);
   std::string suffix = ".json";
   read_json(
       scene_root_path + file_name + suffix,
