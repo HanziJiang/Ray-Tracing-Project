@@ -51,7 +51,6 @@ bool raycolor(const Ray &ray, const double min_t,
   // refraction
   double kr;
   double ior = objects[hit_id]->material->ior;
-  ior = 1.5;
   
   fresnel(ray.direction, n, ior, kr);
   
