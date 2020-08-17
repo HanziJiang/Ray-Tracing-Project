@@ -13,12 +13,13 @@ Eigen::Vector3d refract(const Eigen::Vector3d &in, const Eigen::Vector3d &n, con
 
   Eigen::Vector3d n_copy = n;
 
-  cosi = std::abs(cosi);
 
   // From inside of object to outside
-  if (cosi > 0) {
+  if (cosi >= 0) {
     std::swap(ior_1, ior_2);
     n_copy = -n;
+  } else {
+    cosi = std::abs(cosi);
   }
   
   double ratio = ior_1 / ior_2;

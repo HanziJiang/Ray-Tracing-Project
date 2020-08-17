@@ -8,6 +8,7 @@
 #include "refract.h"
 #include "fresnel.h"
 //#include "AABBTree.h"
+#define PRINT_VEC(d) (std::cout << #d << ": " << d(0) << ", " << d(1) << ", " << d(2) << "\n")
 
 bool raycolor(const Ray &ray, const double min_t,
               const std::vector<std::shared_ptr<Object>> &objects,
@@ -49,8 +50,11 @@ bool raycolor(const Ray &ray, const double min_t,
 
   // refraction
   double kr;
-  const double ior = objects[hit_id]->material->ior;
+  double ior = objects[hit_id]->material->ior;
+  ior = 1.5;
+  
   fresnel(ray.direction, n, ior, kr);
+  
 
   // Total internal reflection
   if (kr >= 1) {

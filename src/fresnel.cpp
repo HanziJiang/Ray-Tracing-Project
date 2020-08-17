@@ -1,5 +1,6 @@
 #include <Eigen/Core>
 #include "fresnel.h"
+#include <iostream>
 // Reference: https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
 
 void fresnel(const Eigen::Vector3d &in, const Eigen::Vector3d &n, const double &ior, double &kr) {
@@ -21,12 +22,13 @@ void fresnel(const Eigen::Vector3d &in, const Eigen::Vector3d &n, const double &
 
   if (sint >= 1) {
     // Total internal reflection
-    kr = 1;
+    kr = 1.0;
   } else {
     double cost = sqrt(std::max(0.0, 1 - sint * sint));
     cosi = std::abs(cosi);
     double Rs = ((ior_2 * cosi) - (ior_1 * cost)) / ((ior_2 * cosi) + (ior_1 * cost));
     double Rp = ((ior_1 * cosi) - (ior_2 * cost)) / ((ior_1 * cosi) + (ior_2 * cost));
+
 
     kr = (Rs * Rs + Rp * Rp) / 2.0;
   }
