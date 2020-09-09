@@ -1,9 +1,5 @@
 # Computer Graphics Project
 
-## Origional Tasks
-### Ray Tracing
-### Meshes
-
 ## New Tasks
 ### Refraction
 Refraction exits in everyday life, that's why I added it to my ray tracing project. It is implemented using [this method](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel). Here is my implementation:
