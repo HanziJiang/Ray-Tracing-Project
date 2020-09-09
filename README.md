@@ -1,5 +1,8 @@
-# Computer Graphics Final Project
-Repo Link: https://github.com/HanziJiang/ray-trace
+# Computer Graphics Project
+
+## Origional Tasks
+### Ray Tracing
+### Meshes
 
 ## New Tasks
 ### Refraction
