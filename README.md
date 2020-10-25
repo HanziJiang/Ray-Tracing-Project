@@ -1,6 +1,5 @@
 # Computer Graphics Project
 
-## New Tasks
 ### Refraction
 Refraction exits in everyday life, that's why I added it to my ray tracing project. It is implemented using [this method](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel). Here is my implementation:
 
@@ -51,7 +50,7 @@ Since some of my favourite meshes are in .obj, some in .stl, I make my project t
 
 
 ## Task in Progress
-It would be great to use BVH to accelerate the ray tracing progress. However, having to prepare for other course projects and exams, I was unable to finish the task. I have commented out BVH related code. My attempt was make `blinn_phong_shading` and `first_hit` take an AABBTree and descendant as arguments instead of a list of objects and hit_id. Each object had an box attribute. Related functions such as `insert_triangle_into_box` were implemented. Each object in the scene file was an AABB tree, together they formed a large AABB tree.
+It would be great to use BVH to accelerate the ray tracing progress. My attempt so far was make `blinn_phong_shading` and `first_hit` take an AABBTree and descendant as arguments instead of a list of objects and hit_id. Each object had an box attribute. Related functions such as `insert_triangle_into_box` were implemented. Each object in the scene file was an AABB tree, together they formed a large AABB tree.
 
 
 ![Alt Text](https://github.com/HanziJiang/ray-trace/blob/master/images/the_catch.png)
